@@ -1,13 +1,19 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { Express } from 'express';
 import { ChargesService } from './charges.service';
-import { CreateChargeDto } from './dto/create-charge.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('charges')
 export class ChargesController {
   constructor(private readonly chargesService: ChargesService) {}
-
   @Post()
-  create(@Body() createChargeDto: CreateChargeDto) {
-    return this.chargesService.create(createChargeDto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(@UploadedFile() file: Express.Multer.File) {
+    return this.chargesService.create(file);
   }
 }

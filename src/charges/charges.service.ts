@@ -1,15 +1,14 @@
-import { Injectable, UploadedFiles } from '@nestjs/common';
 import { Express } from 'express';
-import { Controller, Post, UploadedFile } from '@nestjs/common';
-import { CreateChargeDto } from './dto/create-charge.dto';
-import { UpdateChargeDto } from './dto/update-charge.dto';
+import { Injectable } from '@nestjs/common';
+// import csv from 'csv-parser';
+// import fs from 'node:fs';
 
 @Injectable()
 export class ChargesService {
-  create(@UploadedFile() file: any) {
+  async create(file: Express.Multer.File): Promise<string> {
     console.log({
       file,
     });
-    return 'opaassaa';
+    return 'test';
   }
 }
