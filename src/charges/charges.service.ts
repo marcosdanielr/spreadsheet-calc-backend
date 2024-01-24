@@ -1,9 +1,26 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as csvParser from 'csv-parser';
 
+type SendFileResponse = {
+  average_billing_quantity: number;
+  total_amount: number;
+  total_subscribers: number;
+  data: {
+    billing_quantity: number;
+    billed_every_x_days: number;
+    start_date: string;
+    status: string;
+    status_date: string;
+    cancellation_date: string;
+    amount: number;
+    next_cycle: string;
+    subscriber_id: string;
+  }[];
+};
+
 @Injectable()
 export class ChargesService {
-  async sendFile(file: Express.Multer.File) {
+  async sendFile(file: Express.Multer.File): Promise<SendFileResponse> {
     if (file.mimetype !== 'text/csv') {
       throw new BadRequestException({
         message: 'The file should be a CSV',
@@ -23,18 +40,42 @@ export class ChargesService {
 
     const resultsTranslated = results.map((item) => {
       return {
-        billing_quantity: item['quantidade cobranças'],
-        billed_every_x_days: item['cobrada a cada X dias'],
+        billing_quantity: Number(item['quantidade cobranças']),
+        billed_every_x_days: Number(item['cobrada a cada X dias']),
         start_date: item['data início'],
         status: item['status'],
         status_date: item['data status'],
         cancellation_date: item['data cancelamento'],
-        amount: item['valor'],
+        amount: parseFloat(item['valor'].replace(',', '.')),
         next_cycle: item['próximo ciclo'],
         subscriber_id: item['ID assinante'],
       };
     });
 
-    return resultsTranslated;
+    const totalBillingQuantity = resultsTranslated.reduce(
+      (acc, current) => acc + current.billing_quantity,
+      0,
+    );
+
+    const averageBillingQuantity =
+      totalBillingQuantity / resultsTranslated.length;
+
+    const totalAmount = resultsTranslated.reduce(
+      (acc, current) => acc + current.amount,
+      0,
+    );
+
+    const totalSubscribers = resultsTranslated.filter(
+      (item) => item.subscriber_id,
+    ).length;
+
+    // return results as any;
+
+    return {
+      average_billing_quantity: averageBillingQuantity,
+      total_amount: totalAmount,
+      total_subscribers: totalSubscribers,
+      data: resultsTranslated,
+    };
   }
 }
