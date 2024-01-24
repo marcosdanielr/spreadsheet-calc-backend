@@ -16,7 +16,7 @@ export class ChargesController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
-  create(@UploadedFile() file: Express.Multer.File) {
+  sendFile(@UploadedFile() file: Express.Multer.File) {
     return this.chargesService.sendFile(file);
   }
 }
