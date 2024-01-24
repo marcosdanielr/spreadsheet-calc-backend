@@ -69,8 +69,6 @@ export class ChargesService {
       (item) => item.subscriber_id,
     ).length;
 
-    // return results as any;
-
     return {
       average_billing_quantity: averageBillingQuantity,
       total_amount: totalAmount,
