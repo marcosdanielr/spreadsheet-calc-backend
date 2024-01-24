@@ -1,5 +1,7 @@
 import {
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -12,8 +14,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ChargesController {
   constructor(private readonly chargesService: ChargesService) {}
   @Post()
+  @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))
   create(@UploadedFile() file: Express.Multer.File) {
-    return this.chargesService.create(file);
+    return this.chargesService.sendFile(file);
   }
 }

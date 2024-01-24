@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as csvParser from 'csv-parser';
 
 @Injectable()
 export class ChargesService {
-  async create(file: Express.Multer.File) {
+  async sendFile(file: Express.Multer.File) {
     if (file.mimetype !== 'text/csv') {
-      return { message: 'The file should be a CSV' };
+      throw new BadRequestException({
+        message: 'The file should be a CSV',
+      });
     }
 
     const results: any[] = await new Promise((resolve) => {
