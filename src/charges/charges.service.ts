@@ -27,6 +27,14 @@ export class ChargesService {
       });
     }
 
+    const MAX_FILE_SIZE = 5 * 1000000;
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new BadRequestException({
+        message: 'Max file size is 10mb!',
+      });
+    }
+
     const results: any[] = await new Promise((resolve) => {
       const parser = csvParser();
       const data: any[] = [];
