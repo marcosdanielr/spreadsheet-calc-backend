@@ -31,7 +31,7 @@ export class ChargesService {
 
     if (file.size > MAX_FILE_SIZE) {
       throw new BadRequestException({
-        message: 'Max file size is 10mb!',
+        message: 'Max file size is 5mb!',
       });
     }
 
